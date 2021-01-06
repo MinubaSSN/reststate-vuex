@@ -38,7 +38,7 @@ const storeIncluded = ({ commit, dispatch }, result) => {
   if (result.included) {
     // store the included records
     result.included.forEach(relatedRecord => {
-      const action = `${relatedRecord.type}/storeRecord`;
+      const action = `${relatedRecord.type}/storeRecord`.replace(/--/, '/');
       dispatch(action, relatedRecord, { root: true });
     });
 
@@ -74,7 +74,7 @@ const storeIncluded = ({ commit, dispatch }, result) => {
               relationship: relationshipName,
             },
           };
-          const action = `${type}/storeRelated`;
+          const action = `${type}/storeRelated`.replace(/--/, '/');
           dispatch(action, options, { root: true });
         });
       }
@@ -104,10 +104,10 @@ const initialState = () => ({
 });
 
 const resourceModule = ({ name: resourceName, httpClient }) => {
-  const client = new ResourceClient({ name: resourceName, httpClient });
+  const client = new ResourceClient({ name: resourceName.replace(/--/g, '/'), httpClient });
 
   const getRelationshipIndex = params => {
-    const { parent, relationship = resourceName } = params;
+    const { parent, relationship = resourceName.replace(/--/g, '/') } = params;
     const parentResourceIdentifier = getResourceIdentifier(parent);
 
     return {
@@ -283,7 +283,7 @@ const resourceModule = ({ name: resourceName, httpClient }) => {
       },
 
       loadRelated({ commit, dispatch }, params) {
-        const { parent, relationship = resourceName, options } = params;
+        const { parent, relationship = resourceName.replace(/--/, '/'), options } = params;
         commit('SET_STATUS', STATUS_LOADING);
         const paramsToStore = {
           ...params,
