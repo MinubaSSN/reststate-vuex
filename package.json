@@ -1,5 +1,5 @@
 {
-  "name": "freelock/reststate-vuex",
+  "name": "@freelock/reststate-vuex",
   "version": "0.2.6",
   "description": "Library to access JSON:API data via Vuex stores",
   "main": "index.js",
@@ -14,7 +14,7 @@
     "docs:build": "vuepress build docs"
   },
   "dependencies": {
-    "freelock/reststate-client": "^0.0.10"
+    "@freelock/reststate-client": "^0.0.9"
   },
   "peerDependencies": {
     "vuex": "^3.0.1"
