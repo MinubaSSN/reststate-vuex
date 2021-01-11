@@ -1,4 +1,4 @@
-import { ResourceClient } from '@reststate/client';
+import { ResourceClient } from '@freelock/reststate-client';
 import deepEquals from './deepEquals';
 
 const STATUS_INITIAL = 'INITIAL';
