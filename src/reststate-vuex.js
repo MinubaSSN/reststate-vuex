@@ -212,7 +212,7 @@ const resourceModule = ({ name: resourceName, httpClient }) => {
             commit('SET_STATUS', STATUS_SUCCESS);
             commit('REPLACE_ALL_RECORDS', result.data);
             commit('STORE_META', result.meta);
-            commit('SET_LINKS', results.links);
+            commit('SET_LINKS', result.links);
             storeIncluded({ commit, dispatch }, result);
           })
           .catch(handleError(commit));
