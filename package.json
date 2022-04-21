@@ -1,6 +1,6 @@
 {
   "name": "@freelock/reststate-vuex",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "description": "Library to access JSON:API data via Vuex stores",
   "main": "index.js",
   "repository": {
