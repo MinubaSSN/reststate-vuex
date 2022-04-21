@@ -20,7 +20,7 @@
     "@freelock/reststate-client": "^0.0.9"
   },
   "peerDependencies": {
-    "vuex": "^3.0.1"
+    "vuex": "3 - 4"
   },
   "devDependencies": {
     "@babel/core": "^7.1.2",
