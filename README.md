@@ -9,8 +9,8 @@
 ```javascript
 const store = new Vuex.Store({
   modules: {
-    'widgets': resourceModule({
-      name: 'widgets',
+    'node--article': resourceModule({
+      name: 'node--article',
       httpClient: axios.create(...),
     }),
   },
@@ -19,12 +19,12 @@ const store = new Vuex.Store({
 const component = {
   methods: {
     ...mapActions({
-      loadAllWidgets: 'widgets/loadAll',
+      loadAllArticles: 'node--article/loadAll',
     }),
   },
   computed: {
     ...mapGetters({
-      widgets: 'widgets/all',
+      'articles': 'node--article/all',
     }),
   },
 };
@@ -47,8 +47,8 @@ import api from './api';
 
 const store = new Store({
   modules: {
-    widgets: resourceModule({
-      name: 'widgets',
+    'node--article': resourceModule({
+      name: 'node--article',
       httpClient: api,
     }),
   },
@@ -65,7 +65,7 @@ import api from './api';
 const store = new Store({
   modules: {
     ...mapResourceModules({
-      names: ['widgets', 'purchases'],
+      names: ['node--article', 'commerce_order--order'],
       httpClient: api,
     }),
   },
@@ -86,7 +86,7 @@ const httpClient = axios.create({
 });
 
 const module = resourceModule({
-  name: 'widgets',
+  name: 'node--article',
   httpClient,
 });
 ```
@@ -114,7 +114,13 @@ That's all you need to do--the JSON:API spec takes care of the rest!
 
 ## Usage
 
-For more information on usage, see the [`@reststate/vuex` docs](https://vuex.reststate.codingitwrong.com).
+For more information on usage, see the [`@reststate/vuex` docs](/docs/README.md).
+
+## Changes
+
+4/21/2022 - changed the usage pattern for Drupal JSON:API. In older versions, you would declare a VueX module using "<EntityType>/<Bundle>", and this library would automatically convert relationships listed as "<EntityType>--<Bundle>" to match. However, this pattern does not work in VueX 4, especially in the VueX dev tools.
+
+With release 0.4.0, we reverse this pattern -- now you should declare all modules as "<EntityType>--<Bundle>", and an update to @freelock/reststate-client will auto-convert this pattern to a URL of "<EntityType>/<Bundle>" when querying the server.
 
 ## License
 
