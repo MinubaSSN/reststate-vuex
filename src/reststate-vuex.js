@@ -169,20 +169,14 @@ const resourceModule = ({ name: resourceName, httpClient }) => {
         }
       },
 
-      STORE_FILTERED: (state, { matchedIds, params, link }) => {
+      STORE_FILTERED: (state, { matchedIds, params }) => {
         const { filtered } = state;
 
-        // const existingRecord = filtered.find(matches(params));
-        const existingRecord = filtered.find((item) => item.link === link);
-        if (existingRecord && params) {
+        const existingRecord = filtered.find(matches(params));
+        if (existingRecord) {
           existingRecord.matchedIds = matchedIds;
-        } else if (existingRecord) {
-          existingRecord.matchedIds = [
-            ...existingRecord.matchedIds,
-            ...matchedIds
-          ];
         } else {
-          filtered.push({ matchedIds, link, ...params,});
+          filtered.push(Object.assign({ matchedIds }, params));
         }
       },
 
@@ -212,7 +206,6 @@ const resourceModule = ({ name: resourceName, httpClient }) => {
             commit('SET_STATUS', STATUS_SUCCESS);
             commit('REPLACE_ALL_RECORDS', result.data);
             commit('STORE_META', result.meta);
-            commit('SET_LINKS', result.links);
             storeIncluded({ commit, dispatch }, result);
           })
           .catch(handleError(commit));
@@ -240,14 +233,8 @@ const resourceModule = ({ name: resourceName, httpClient }) => {
             commit('SET_STATUS', STATUS_SUCCESS);
             const matches = results.data;
             const matchedIds = matches.map(record => record.id);
-            // This is specific to Drupal JSONAPI - the "self" link may be written in a different sequence
-            // than the next/previous/first links. So store the first link using the next link, with the offset set to 0.
-            const link = results.links.next
-              ? results.links.next.href.replace(/offset%5D=50/, 'offset%5D=0')
-              : results.links.self.href;
             commit('STORE_RECORDS', matches);
-            commit('STORE_FILTERED', { params, matchedIds, link });
-            commit('SET_LINKS', results.links);
+            commit('STORE_FILTERED', { params, matchedIds });
             commit('STORE_META', results.meta);
             storeIncluded({ commit, dispatch }, results);
           })
@@ -271,14 +258,11 @@ const resourceModule = ({ name: resourceName, httpClient }) => {
 
       loadNextPage({ commit, state, dispatch }) {
         const options = {
-          url: state.links.next.href,
+          url: state.links.next,
         };
         return client.all({ options }).then(response => {
-          commit('SET_STATUS', STATUS_SUCCESS);
-          const matches = response.data;
-          const matchedIds = matches.map(record => record.id);
-          commit('STORE_RECORDS', matches);
-          commit('STORE_FILTERED', { matchedIds, link: response.links.first.href });
+          commit('STORE_RECORDS', response.data);
+          commit('STORE_PAGE', response.data);
           commit('SET_LINKS', response.links);
           commit('STORE_META', response.meta);
           storeIncluded({ commit, dispatch }, response);
@@ -287,7 +271,7 @@ const resourceModule = ({ name: resourceName, httpClient }) => {
 
       loadPreviousPage({ commit, state, dispatch }) {
         const options = {
-          url: state.links.prev.href,
+          url: state.links.prev,
         };
         return client.all({ options }).then(response => {
           commit('STORE_RECORDS', response.data);
